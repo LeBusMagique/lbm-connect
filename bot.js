@@ -22,7 +22,8 @@ client.on('message', message => {
     message.delete();
 
     if(args.length == 0) {
-      message.reply('pour vérifier ton compte, tu dois indiquer une clé d\'API valide après la commande : `'+ process.env.PREFIX +'vérifier <clé-api>`. Pour créer une clé API, tu peux visiter cette page sur le site officiel : https://account.arena.net/applications/create. Seule l\'autorisation par défaut _account_ est requise.');
+      message.reply('pour vérifier ton compte, tu dois indiquer une clé d\'API valide après la commande : `'+ process.env.PREFIX +'vérifier <clé-api>`. Pour créer une clé API, tu peux visiter cette page sur le site officiel : https://account.arena.net/applications/create. Seule l\'autorisation par défaut _account_ est requise.')
+        .then((msg) => { msg.delete(process.env.DELETE_AFTER) }).catch((e) => {});
       return;
     }
 
@@ -35,7 +36,9 @@ client.on('message', message => {
           .then((res) => {
 
             if(typeof(res.data.name) == 'undefined') {
-              return message.reply('impossible de récupérer ton nom de compte et donc de vérifier ton compte.');
+              message.reply('impossible de récupérer ton nom de compte et donc de vérifier ton compte.')
+                .then((msg) => { msg.delete(process.env.DELETE_AFTER) }).catch((e) => {});
+              return;
             }
 
             if(typeof(res.data.guilds) !== 'undefined') {
@@ -49,18 +52,24 @@ client.on('message', message => {
             message.member.addRole(process.env.DISCORD_ROLE_VERIFIED);
             message.member.setNickname(res.data.name);
 
-            return message.reply('ton compte a bien été vérifié ! Nous te souhaitons la bienvenue à bord du Bus.');
+            message.reply('ton compte a bien été vérifié ! Nous te souhaitons la bienvenue à bord du Bus.')
+              .then((msg) => { msg.delete(process.env.DELETE_AFTER) }).catch((e) => {});
+            return;
 
           })
           .catch((e) => {
             console.log(e);
-            return message.reply('cette clé d\'API semble incorrecte. Merci vérifier la clé d\'API utilisée avant de réessayer.');
+            message.reply('cette clé d\'API semble incorrecte. Merci vérifier la clé d\'API utilisée avant de réessayer.')
+              .then((msg) => { msg.delete(process.env.DELETE_AFTER) }).catch((e) => {});
+            return;
           });
 
       })
       .catch((e) => {
         console.log(e);
-        return message.reply('l\'API ne semble pas disponible, il n\'est donc pas possible de vérifier ton compte pour le moment. Merci de réessayer un peu plus tard ou de contacter un des membres de l\'équipe du Bus Magique.');
+        message.reply('l\'API ne semble pas disponible, il n\'est donc pas possible de vérifier ton compte pour le moment. Merci de réessayer un peu plus tard ou de contacter un des membres de l\'équipe du Bus Magique.')
+          .then((msg) => { msg.delete(process.env.DELETE_AFTER) }).catch((e) => {});
+        return;
       });
 
 	}
