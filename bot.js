@@ -22,7 +22,7 @@ client.on('message', message => {
     message.delete();
 
     if(args.length == 0) {
-      message.reply('pour vérifier ton compte, tu dois indiquer une clé d\'API valide après la commande : `'+ process.env.PREFIX +'vérifier <clé-api>`. Pour créer une clé API, tu peux visiter cette page sur le site officiel : https://account.arena.net/applications/create. Seule l\'autorisation par défaut _account_ est requise.')
+      message.reply('pour vérifier ton compte, tu dois indiquer une clé d\'API valide après la commande : `'+ process.env.PREFIX +'vérifier <clé-api>`, en remplacant `<clé-api>` par ta propre clé. Pour créer une clé API, tu peux visiter cette page sur le site officiel : https://account.arena.net/applications/create. Seule l\'autorisation par défaut _account_ est requise.')
         .then((msg) => { msg.delete(process.env.DELETE_AFTER) }).catch((e) => {});
       return;
     }
@@ -59,7 +59,7 @@ client.on('message', message => {
           })
           .catch((e) => {
             console.log(e);
-            message.reply('cette clé d\'API semble incorrecte. Merci vérifier la clé d\'API utilisée avant de réessayer.')
+            message.reply('cette clé d\'API semble incorrecte. Merci de vérifier la clé d\'API utilisée avant de réessayer. Il faut taper la commande `/vérifier <clé-api>`, en remplacant `<clé-api>` par ta propre clé.')
               .then((msg) => { msg.delete(process.env.DELETE_AFTER) }).catch((e) => {});
             return;
           });
