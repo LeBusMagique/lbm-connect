@@ -74,6 +74,38 @@ client.on('message', message => {
 
 	}
 
+  if( message.content.startsWith(process.env.PREFIX + 'composter') && !message.author.bot ) {
+
+    if(!message.member.roles.find(r => r.name === "Organisateur")){
+      message.delete();
+      return;
+    }
+
+    if(!message.member.voiceChannelID) {
+      message.reply('tu dois être connecté en vocal avec les membres dont tu souhaites valider le ticket !');
+      message.delete();
+      return;
+    }
+
+    var organizer = (message.member.nickname) ? message.member.nickname : message.member.displayName;
+    var members = client.channels.get( message.member.voiceChannelID ).members;
+    var nicknames = [];
+
+    members.forEach(m => {
+      if(m.nickname) {
+        nicknames.push(m.nickname)
+      }
+    });
+
+    axios.post(process.env.COMPOSTER, JSON.stringify({
+      organizer: organizer,
+      nicknames: nicknames
+    }));
+
+    message.delete();
+    return;
+  }
+
   return;
 
 });
