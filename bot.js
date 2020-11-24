@@ -51,6 +51,64 @@ client.on('message', message => {
     return;
   }
 
+  if(message.content.startsWith(process.env.PREFIX + 'roster') && !message.author.bot) {
+
+    if(!message.member.roles.cache.has(process.env.ROSTER_LEAD)) {
+      message.reply('seuls les leads de raids peuvent utiliser cette commande.');
+      message.delete();
+      return;
+    }
+
+    let user = message.mentions.members.first();
+    if (!user) return message.reply("tu as oublié de mentionner le joueur...");
+    let role = message.mentions.roles.first();
+    if (!role) return message.reply("tu as oublié de mentionner le roster...");
+
+    let roles = process.env.ROSTER_ROLES.split(',');
+    if(!roles.includes(role.id)) {
+      message.reply('ce rôle ne fait pas partie de la liste blanche...');
+      message.delete();
+      return;
+    }
+
+    let author = message.author.username + '#' + message.author.discriminator;
+
+    user.send(author + ' t\'a donné le rôle "' + role.name + '" sur le serveur Discord du Bus Magique.');
+    user.roles.add(role.id);
+
+    message.reply('le rôle <@&'+role.id+'> a été donné à <@'+user.id+'>.');
+    message.delete();
+  }
+
+  if(message.content.startsWith(process.env.PREFIX + 'unroster') && !message.author.bot) {
+
+    if(!message.member.roles.cache.has(process.env.ROSTER_LEAD)) {
+      message.reply('seuls les leads de raids peuvent utiliser cette commande.');
+      message.delete();
+      return;
+    }
+
+    let user = message.mentions.members.first();
+    if (!user) return message.reply("tu as oublié de mentionner le joueur...");
+    let role = message.mentions.roles.first();
+    if (!role) return message.reply("tu as oublié de mentionner le roster...");
+
+    let roles = process.env.ROSTER_ROLES.split(',');
+    if(!roles.includes(role.id)) {
+      message.reply('ce rôle ne fait pas partie de la liste blanche...');
+      message.delete();
+      return;
+    }
+
+    let author = message.author.username + '#' + message.author.discriminator;
+
+    user.send(author + ' t\'a retiré le rôle "' + role.name + '" sur le serveur Discord du Bus Magique.');
+    user.roles.remove(role.id);
+
+    message.reply('le rôle <@&'+role.id+'> a été retiré à <@'+user.id+'>.');
+    message.delete();
+  }
+
   return;
 
 });
