@@ -76,7 +76,7 @@ client.on('message', message => {
     user.send(author + ' t\'a donné le rôle "' + role.name + '" sur le serveur Discord du Bus Magique.');
     user.roles.add(role.id);
 
-    message.reply('le rôle <@&'+role.id+'> a été donné à <@'+user.id+'>.');
+    message.reply('le rôle "' + role.name + '" a été donné à <@'+user.id+'>.');
     message.delete();
   }
 
