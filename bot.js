@@ -11,6 +11,35 @@ client.on('message', message => {
 
   if (!message.content.startsWith(process.env.PREFIX) || message.author.bot) return;
 
+  if( message.content.startsWith(process.env.PREFIX + 'giveaway-reset') && !message.author.bot ) {
+
+    if(!message.member.roles.cache.has(process.env.DISCORD_ROLE_ADMIN)) {
+      message.reply('seuls les admins peuvent utiliser cette commande.');
+      message.delete();
+      return;
+    }
+
+    let role = message.guild.roles.cache.find(role => role.name === process.env.DISCORD_ROLE_GIVEAWAY);
+
+    if(role) {
+      message.guild.roles.create({
+        data: {
+          name: role.name,
+          color: role.color,
+          hoist: role.hoist,
+          position: role.position,
+          permissions: role.permissions,
+          mentionable: role.mentionable
+        }
+      });
+
+      role.delete('I had to.');
+      message.reply('rôle réinitialisé.');
+    }
+
+    message.delete();
+  }
+
   if( message.content.startsWith(process.env.PREFIX + 'composter') && !message.author.bot ) {
 
     if(!message.member) {
@@ -31,13 +60,18 @@ client.on('message', message => {
       return;
     }
 
-    var organizer = (message.member.nickname) ? message.member.nickname : message.member.displayName;
-    var members = client.channels.cache.get(message.member.voice.channelID).members;
-    var nicknames = [];
+    let organizer = (message.member.nickname) ? message.member.nickname : message.member.displayName;
+    let members = client.channels.cache.get(message.member.voice.channelID).members;
+    let role = message.guild.roles.cache.find(role => role.name === process.env.DISCORD_ROLE_GIVEAWAY);
+    let nicknames = [];
 
     members.forEach(m => {
       if(m.nickname) {
-        nicknames.push(m.nickname)
+        nicknames.push(m.nickname);
+
+        if(role) {
+          m.roles.add(role.id);
+        }
       }
     });
 
@@ -108,8 +142,6 @@ client.on('message', message => {
     message.reply('le rôle <@&'+role.id+'> a été retiré à <@'+user.id+'>.');
     message.delete();
   }
-
-  return;
 
 });
 
